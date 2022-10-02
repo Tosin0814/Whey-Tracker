@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Whey Details</h1>
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">{{ whey.name }}</span>
+            <p>Protein Content: {{ whey.protein_content }} grams</p>
+            <p>Size: {{ whey.size }} lbs</p>
+            <p>Price: ${{whey.price}}</p>
+            <p>Rating: {{whey.rating}}/5</p>
+            <p>Review: {{whey.review}}</p>
+        </div>
+    </div>
+
+{% endblock %}
