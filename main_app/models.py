@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
 
 # Create your models here.
@@ -12,3 +13,7 @@ class Whey(models.Model):
 
     def __str__(self):
         return self.name
+    
+    # Add this method to aid with Create Redirect to the new item page
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'pk': self.id})
