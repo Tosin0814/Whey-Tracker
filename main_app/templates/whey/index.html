@@ -3,16 +3,16 @@
 
 {% block content %}
     <h1>Whey List</h1>
-    {% for protein in whey %}
-        <a href="{% url 'detail' protein.id %}">
+    {% for whey in whey_list %}
+        <a href="{% url 'detail' whey.id %}">
             <div class="card">
                 <div class="card-content">
-                    <span class="card-title">{{ protein.name }}</span>
-                    <p>Protein Content: {{ protein.protein_content }} grams</p>
-                    <p>Size: {{ protein.size }} lbs</p>
-                    <p>Price: ${{protein.price}}</p>
-                    <p>Rating: {{protein.rating}}/5</p>
-                    <p>Review: {{protein.review}}</p>
+                    <span class="card-title">{{ whey.name }}</span>
+                    <p>Protein Content: {{ whey.protein_content }} grams</p>
+                    <p>Size: {{ whey.size }} lbs</p>
+                    <p>Price: ${{whey.price}}</p>
+                    <p>Rating: {{whey.rating}}/5</p>
+                    <p>Review: {{whey.review}}</p>
                 </div>
             </div>
         </a>

@@ -10,6 +10,10 @@
             <p>Rating: {{whey.rating}}/5</p>
             <p>Review: {{whey.review}}</p>
         </div>
+        <div class="card-action">
+            <a href="{% url 'whey_update' whey.id %}">Edit</a>
+            <a href="{% url 'whey_delete' whey.id %}">Delete</a>
+        </div>
     </div>
 
 {% endblock %}
