@@ -25,9 +25,10 @@ class WheyList(ListView):
     model = Whey
     template_name = 'whey/index.html'
 
-class WheyDetail(DetailView):
-    model = Whey
-    template_name = 'whey/detail.html'
+# class WheyDetail(DetailView):
+#     model = Whey
+#     template_name = 'whey/detail.html'
+
 
 class WheyCreate(CreateView):
     model = Whey
