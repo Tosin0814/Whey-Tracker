@@ -11,11 +11,37 @@
             <p>Review: {{whey.review}}</p>
         </div>
         <div class="card-action">
-            <a href="{% url 'whey_update' whey.id %}">Edit</a>
-            <a href="{% url 'whey_delete' whey.id %}">Delete</a>
+            <a class="text-decoration-none" href="{% url 'whey_update' whey.id %}">Edit</a>
+            <a class="text-decoration-none" href="{% url 'whey_delete' whey.id %}">Delete</a>
         </div>
     </div>
+    <br>
+    <div class="add-review-form">
+        <form action="{% url 'add_customer_review' whey.id %}" method="post">
+            {% csrf_token %}
+            {{ customer_rating_form.as_p }}
+            <input type="submit" class="btn btn-primary" value="Add Review">
+        </form>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="customer-reviews">
+        {% for review in whey.customerrating_set.all %}
+            <div class="border border-secondary p-2 mb-2 review">
+                <h6 class="bottom-border border-secondary">{{review.user_name}}</h6>
+                <hr>
+                <p>Rating: {{review.rating}}</p>
+                <p>Value: {{review.get_value_display}}</p>
+                <p>Review: {{review.review_text}}</p>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
 
-    
-
+    <script>
+        // add additional JS to initialize select below
+        var selectEl = document.querySelector('#id_value');
+        M.FormSelect.init(selectEl);
+    </script>
 {% endblock %}

@@ -4,4 +4,4 @@ from .models import CustomerRating
 class CustomerRatingForm(ModelForm):
   class Meta:
     model = CustomerRating
-    fields = ['date', 'meal']
+    fields = ['user_name','rating', 'value', 'review_text']

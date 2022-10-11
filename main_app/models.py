@@ -1,6 +1,7 @@
 from email.policy import default
 from django.db import models
 from django.urls import reverse
+from datetime import datetime  
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
 
 
@@ -32,16 +33,19 @@ class Whey(models.Model):
 
 class CustomerRating(models.Model):
     user_name = models.CharField(max_length=100)
-    date = models.DateField('Rating Date')
+    date = models.DateField('Rating Date', default=datetime.now)
     rating = models.FloatField(validators=[MinValueValidator(0.0)])
-    review = models.CharField(
+    value = models.CharField(
         max_length=2,
         choices=REVIEWS,
-        default=REVIEWS[3][0]
         )
     review_text = models.TextField(max_length=500)
     whey = models.ForeignKey(Whey, on_delete=models.CASCADE)
     
     def __str__(self):
         # Nice method for obtaining the friendly value of a Field.choice
-        return f"{self.get_review_display()} on {self.date}"
+        return f"{self.get_value_display()} on {self.date}"
+
+    # change the default sort
+    class Meta:
+        ordering = ['-date']

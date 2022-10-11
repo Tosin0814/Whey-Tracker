@@ -11,5 +11,7 @@ urlpatterns = [
     path('whey/<int:whey_id>/', views.whey_detail, name='detail'),
     path('whey/create', views.WheyCreate.as_view(), name='whey_create'),
     path('whey/<int:pk>/update/', views.WheyUpdate.as_view(), name='whey_update'),
-    path('whey/<int:pk>/delete/', views.WheyDelete.as_view(), name='whey_delete')
+    path('whey/<int:pk>/delete/', views.WheyDelete.as_view(), name='whey_delete'),
+
+    path('whey/<int:whey_id>/add_customer_review/', views.add_customer_review, name='add_customer_review'),
 ]
