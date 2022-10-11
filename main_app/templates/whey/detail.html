@@ -17,7 +17,7 @@
     </div>
     <br>
     <div class="add-review-form">
-        <form action="{% url 'add_customer_review' whey.id %}" method="post">
+        <form class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
             {% csrf_token %}
             {{ customer_rating_form.as_p }}
             <input type="submit" class="btn btn-primary" value="Add Review">
