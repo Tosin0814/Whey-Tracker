@@ -35,6 +35,10 @@ class Celebrity(models.Model):
     def get_absolute_url(self):
         return reverse('celeb_detail', kwargs={'pk': self.id})
 
+    # change the default sort
+    class Meta:
+        ordering = ['name']
+
 
 class Whey(models.Model):
     name = models.CharField(max_length=300)

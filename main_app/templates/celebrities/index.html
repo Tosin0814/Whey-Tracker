@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <h1>Celebrity List</h1>
+    {% for celebrity in celebrity_list %}
+        <a class="text-decoration-none" href="{% url 'celeb_detail' celebrity.id %}">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">{{ celebrity.name }}</span>
+                    <p>Profession: {{ celebrity.get_profession_display }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
