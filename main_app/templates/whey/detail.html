@@ -1,22 +1,80 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>Whey Details</h1>
-    <div class="card">
-        <div class="card-content">
-            <span class="card-title">{{ whey.name }}</span>
-            <p>Protein Content: {{ whey.protein_content }} grams</p>
-            <p>Size: {{ whey.size }} lbs</p>
-            <p>Price: ${{whey.price}}</p>
-            <p>Rating: {{whey.rating}}/5</p>
-            <p>Review: {{whey.review}}</p>
-        </div>
-        <div class="card-action">
-            <a class="text-decoration-none" href="{% url 'whey_update' whey.id %}">Edit</a>
-            <a class="text-decoration-none" href="{% url 'whey_delete' whey.id %}">Delete</a>
+    <div class="container">
+        <div class="">
+            <div class="card row">
+                <div>
+                    <div class="card-content">
+                        <span class="card-title">{{ whey.name }}</span>
+                        <p>Protein Content: {{ whey.protein_content }} grams</p>
+                        <p>Size: {{ whey.size }} lbs</p>
+                        <p>Price: ${{whey.price}}</p>
+                        <p>Rating: {{whey.rating}}/5</p>
+                        <p>Review: {{whey.review}}</p>
+                    </div>
+                    <div class="card-action">
+                        <a class="text-decoration-none" href="{% url 'whey_update' whey.id %}">Edit</a>
+                        <a class="text-decoration-none" href="{% url 'whey_delete' whey.id %}">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card row">
+                <div class="">
+                    <h5> {{ whey.name }} is known to be used by:</h5>
+                    {% if whey.celebrities.count %}
+                        <ul>
+                            <div class="container">
+                                {% for celebrity in whey.celebrities.all %}
+                                <div class="row border-bottom">
+                                    <div class="col align-self-start">
+                                        <li >{{celebrity.name}} the {{celebrity.get_profession_display}}</li>
+                                    </div>
+                                    <div class="col-1 align-self-end">
+                                        <form action="{% url 'disassoc_celeb' whey.id celebrity.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-small btn-danger">X</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </ul>
+                    {% else %}
+                        <h6>No one is known to use this supplement</h6>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="">
+                    <h6>Add Celebrity</h6>
+                    {% if celebs_whey_doesnt_have.count %}
+                        <ul>
+                            <div class="container">
+                                {% for celebrity in celebs_whey_doesnt_have.all %}
+                                <div class="row border-bottom">
+                                    <div class="col align-self-start">
+                                        <li >{{celebrity.name}}</li>
+                                    </div>
+                                    <div class="col-1 align-self-end">
+                                        <form action="{% url 'assoc_celeb' whey.id celebrity.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-small btn-danger">Add</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </ul>
+                    {% else %}
+                        <h6>No more celebrities to add</h6>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
     <br>
     <div class="add-review-form">
+        <h4>Review Whey</h4>
         <form class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
             {% csrf_token %}
             {{ customer_rating_form.as_p }}
@@ -42,6 +100,8 @@
     <script>
         // add additional JS to initialize select below
         var selectEl = document.querySelector('#id_value');
+        M.FormSelect.init(selectEl);
+        var selectEl = document.querySelector('#add-celeb');
         M.FormSelect.init(selectEl);
     </script>
 {% endblock %}

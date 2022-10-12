@@ -20,9 +20,11 @@ def about(request):
 def whey_detail(request, whey_id):
     whey = Whey.objects.get(id=whey_id)
     customer_rating_form = CustomerRatingForm()
+    celebs_whey_doesnt_have = Celebrity.objects.exclude(id__in = whey.celebrities.all().values_list('id'))
     return render(request, 'whey/detail.html', {
         'whey': whey,
-        'customer_rating_form': customer_rating_form
+        'customer_rating_form': customer_rating_form,
+        'celebs_whey_doesnt_have': celebs_whey_doesnt_have,
         }
     )
     
@@ -30,11 +32,6 @@ def whey_detail(request, whey_id):
 class WheyList(ListView):
     model = Whey
     template_name = 'whey/index.html'
-
-# class WheyDetail(DetailView):
-#     model = Whey
-#     template_name = 'whey/detail.html'
-
 
 class WheyCreate(CreateView):
     model = Whey
@@ -83,3 +80,20 @@ class CelebDelete(DeleteView):
     model = Celebrity
     template_name = 'celebrities/confirm_delete.html'
     success_url = '/celebrities/'
+
+def assoc_celeb(request, whey_id, celebrity_id):
+    Whey.objects.get(id=whey_id).celebrities.add(celebrity_id)
+    return redirect('whey_detail', whey_id=whey_id)
+
+# def assoc_celeb(request, whey_id):
+#     # Whey.objects.get(id=whey_id).celebrities.add(celebrity_id)
+#     # return redirect('whey_detail', whey_id=whey_id)
+#     celeb_id = (request.GET[1])
+#     print(f"We got: {celeb_id}")
+#     # if form.is_valid():
+#     Whey.objects.get(id=whey_id).celebrities.add(celebrity_id =celeb_id)
+#     return redirect('whey_detail', whey_id=whey_id)
+
+def disassoc_celeb(request, whey_id, celebrity_id):
+  Whey.objects.get(id=whey_id).celebrities.remove(celebrity_id)
+  return redirect('whey_detail', whey_id=whey_id)
