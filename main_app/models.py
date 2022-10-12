@@ -1,4 +1,3 @@
-from email.policy import default
 from django.db import models
 from django.urls import reverse
 from datetime import datetime  
@@ -14,7 +13,29 @@ REVIEWS = (
     ('VB', 'Very Bad'),
     ('S', 'Stay Away')
 )
+
+PROFESSIONS = (
+    ('M', 'Musician'),
+    ('A', 'Actor'),
+    ('S', 'Athlete'),
+    ('O', 'Other'),
+)
 # Create your models here.
+class Celebrity(models.Model):
+    name = models.CharField(max_length=50)
+    profession = models.CharField(
+        max_length=2,
+        choices = PROFESSIONS,
+    )
+
+    def __str__(self):
+        return f"{self.name} the {self.get_profession_display()}"
+
+    # Add this method to aid with Create Redirect to the new item page
+    def get_absolute_url(self):
+        return reverse('celeb_detail', kwargs={'pk': self.id})
+
+
 class Whey(models.Model):
     name = models.CharField(max_length=300)
     protein_content = models.FloatField(validators=[MinValueValidator(0.0)],)
@@ -22,6 +43,7 @@ class Whey(models.Model):
     price = models.FloatField(validators=[MinValueValidator(0.0)],)
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)],)
     review = models.TextField(max_length=500)
+    celebrities = models.ManyToManyField(Celebrity)
 
     def __str__(self):
         return self.name

@@ -1,6 +1,6 @@
 from nis import cat
 from django.shortcuts import render, redirect
-from .models import Whey
+from .models import Whey, Celebrity
 from .forms import CustomerRatingForm
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView
 
@@ -38,7 +38,7 @@ class WheyList(ListView):
 
 class WheyCreate(CreateView):
     model = Whey
-    fields = '__all__'
+    fields = ['name','protein_content', 'size', 'price', 'rating', 'review']
     template_name = 'whey/create.html'
 
 class WheyUpdate(UpdateView):
@@ -59,3 +59,27 @@ def add_customer_review(request, whey_id):
         new_customer_review.whey_id = whey_id
         new_customer_review.save()
     return redirect('detail', whey_id = whey_id)
+
+
+class CelebList(ListView):
+    model = Celebrity
+    template_name = 'celebrities/index.html'
+
+class CelebDetail(DetailView):
+    model = Celebrity
+    template_name = 'celebrities/detail.html'
+
+class CelebCreate(CreateView):
+    model = Celebrity
+    fields = ['name', 'profession']
+    template_name = 'celebrities/create.html'
+
+class CelebUpdate(UpdateView):
+    model = Celebrity
+    fields = ['profession']
+    template_name = 'celebrities/create.html'
+
+class CelebDelete(DeleteView):
+    model = Celebrity
+    template_name = 'celebrities/confirm_delete.html'
+    success_url = '/celebrities/'
