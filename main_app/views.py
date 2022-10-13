@@ -81,18 +81,18 @@ class CelebDelete(DeleteView):
     template_name = 'celebrities/confirm_delete.html'
     success_url = '/celebrities/'
 
-def assoc_celeb(request, whey_id, celebrity_id):
-    Whey.objects.get(id=whey_id).celebrities.add(celebrity_id)
-    return redirect('whey_detail', whey_id=whey_id)
 
-# def assoc_celeb(request, whey_id):
-#     # Whey.objects.get(id=whey_id).celebrities.add(celebrity_id)
-#     # return redirect('whey_detail', whey_id=whey_id)
-#     celeb_id = (request.GET[1])
-#     print(f"We got: {celeb_id}")
-#     # if form.is_valid():
-#     Whey.objects.get(id=whey_id).celebrities.add(celebrity_id =celeb_id)
+# Used for listing celebs to add instead of Select
+# def assoc_celeb(request, whey_id, celebrity_id):
+#     Whey.objects.get(id=whey_id).celebrities.add(celebrity_id)
 #     return redirect('whey_detail', whey_id=whey_id)
+
+# Used for selecting celebs instead of listing
+def assoc_celeb(request, whey_id):
+    celeb_id = request.POST.get('celebs_whey_doesnt_have')
+    print(f"We got: {celeb_id}")
+    Whey.objects.get(id=whey_id).celebrities.add(celeb_id)
+    return redirect('whey_detail', whey_id=whey_id)
 
 def disassoc_celeb(request, whey_id, celebrity_id):
   Whey.objects.get(id=whey_id).celebrities.remove(celebrity_id)

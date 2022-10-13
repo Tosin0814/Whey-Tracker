@@ -51,23 +51,17 @@
                 <div class="">
                     <h6>Add Celebrity</h6>
                     {% if celebs_whey_doesnt_have.count %}
-                        <ul>
-                            <div class="container">
-                                {% for celebrity in celebs_whey_doesnt_have.all %}
-                                <div class="row border-bottom">
-                                    <div class="col align-self-start">
-                                        <li >{{celebrity.name}}</li>
-                                    </div>
-                                    <div class="col-1 align-self-end">
-                                        <form action="{% url 'assoc_celeb' whey.id celebrity.id %}" method="post">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-small btn-primary">Add</button>
-                                        </form>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </ul>
+                        <div class="container">
+                            <form action="{% url 'assoc_celeb' whey.id %}" method="post">
+                                {% csrf_token %}
+                                <select name="celebs_whey_doesnt_have" id="add_celeb">
+                                    {% for celebrity in celebs_whey_doesnt_have.all %}
+                                        <option value="{{celebrity.id}}">{{celebrity.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-small btn-primary">Add</button>
+                            </form>
+                        </div>
                     {% else %}
                         <h6>No more celebrities to add</h6>
                     {% endif %}
@@ -104,7 +98,7 @@
         // add additional JS to initialize select below
         var selectEl = document.querySelector('#id_value');
         M.FormSelect.init(selectEl);
-        var selectEl = document.querySelector('#add-celeb');
+        var selectEl = document.querySelector('#add_celeb');
         M.FormSelect.init(selectEl);
     </script>
 {% endblock %}
