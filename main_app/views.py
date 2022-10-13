@@ -55,7 +55,7 @@ def add_customer_review(request, whey_id):
         new_customer_review = form.save(commit=False)
         new_customer_review.whey_id = whey_id
         new_customer_review.save()
-    return redirect('detail', whey_id = whey_id)
+    return redirect('whey_detail', whey_id = whey_id)
 
 
 class CelebList(ListView):
