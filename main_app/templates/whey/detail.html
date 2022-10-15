@@ -3,8 +3,8 @@
     <h1>Whey Details</h1>
     <div class="container">
         <div class="">
-            <div class="card row">
-                <div>
+            <div class="row">
+                <div class="card col-md-7">
                     <div class="card-content">
                         <span class="card-title">{{ whey.name }}</span>
                         <p>Protein Content: {{ whey.protein_content }} grams</p>
@@ -18,19 +18,17 @@
                         <a class="text-decoration-none" href="{% url 'whey_delete' whey.id %}">Delete</a>
                     </div>
                 </div>
-            </div>
-            <div class="card row">
-                <div class="">
+                <div class="card col-md-4 ml-auto p-3">
                     <h5> {{ whey.name }} is used by:</h5>
                     {% if whey.celebrities.count %}
                         <ul>
-                            <div class="container">
+                            <div class="ml-5 container">
                                 {% for celebrity in whey.celebrities.all %}
                                 <div class="row border-bottom">
-                                    <div class="col align-self-start">
+                                    <div class="col-9 align-self-start">
                                         <li >{{celebrity.name}} the {{celebrity.get_profession_display}}</li>
                                     </div>
-                                    <div class="col-1 align-self-end">
+                                    <div class="col align-self-end ">
                                         <form action="{% url 'disassoc_celeb' whey.id celebrity.id %}" method="post">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-small btn-danger">X</button>
@@ -44,12 +42,11 @@
                         <h6>No one is known to use this supplement</h6>
                     {% endif %}
                 </div>
-                <br>
             </div>
             <br>
-            <div class="table ">
-                <div class="">
-                    <h6>Add Celebrity</h6>
+            <div class="row">
+                <div class="card col-3 pt-3">
+                    <h4>Add Celebrity</h4>
                     {% if celebs_whey_doesnt_have.count %}
                         <div class="container">
                             <form action="{% url 'assoc_celeb' whey.id %}" method="post">
@@ -66,22 +63,25 @@
                         <h6>No more celebrities to add</h6>
                     {% endif %}
                 </div>
+                <br>
+                <div class="col-7 card add-review-form pt-3">
+                    <h4>Review Whey</h4>
+                    <form class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
+                        {% csrf_token %}
+                        {{ customer_rating_form.as_p }}
+                        <input type="submit" class="btn btn-primary" value="Add Review">
+                    </form>
+                </div>
             </div>
         </div>
     </div>
     <br>
-    <div class="add-review-form">
-        <h4>Review Whey</h4>
-        <form class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
-            {% csrf_token %}
-            {{ customer_rating_form.as_p }}
-            <input type="submit" class="btn btn-primary" value="Add Review">
-        </form>
-    </div>
     <br>
     <br>
     <br>
-    <div class="customer-reviews">
+    <div class="card customer-reviews p-5 m-3">
+        <h4>Customer Reviews</h4>
+        <br>
         {% for review in whey.customerrating_set.all %}
             <div class="border border-secondary p-2 mb-2 review">
                 <h6 class="bottom-border border-secondary">{{review.user_name}}</h6>
