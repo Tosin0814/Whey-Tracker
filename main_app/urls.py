@@ -23,4 +23,5 @@ urlpatterns = [
     # path('whey/<int:whey_id>/assoc_celeb/<int:celebrity_id>/', views.assoc_celeb, name='assoc_celeb'),
     path('whey/<int:whey_id>/disassoc_celeb/<int:celebrity_id>/', views.disassoc_celeb, name='disassoc_celeb'),
     path('whey/<int:whey_id>/add_photo/', views.add_photo, name='add_photo'),
+    path('accounts/signup/', views.signup, name='signup'),
 ]

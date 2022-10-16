@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from datetime import datetime  
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
+from django.contrib.auth.models import User
 
 
 REVIEWS = (
@@ -48,13 +49,14 @@ class Whey(models.Model):
     rating = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(5.0)],)
     review = models.TextField(max_length=500)
     celebrities = models.ManyToManyField(Celebrity)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
     
     # Add this method to aid with Create Redirect to the new item page
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'pk': self.id})
+        return reverse('whey_detail', kwargs={'whey_id': self.id})
 
 
 class CustomerRating(models.Model):

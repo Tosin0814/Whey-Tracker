@@ -20,11 +20,17 @@
           <li><a href="{% url 'home' %}" class="left brand-logo text-decoration-none">&nbsp;&nbsp;Whey Tracker</a></li>
         </ul>
         <ul class="right">
-          <li><a class="text-decoration-none" href="{% url 'about' %}">About</a></li>
-          <li><a class="text-decoration-none" href="{% url 'celeb_create' %}">Add Celebrity</a></li>
-          <li><a class="text-decoration-none" href="{% url 'celeb_index' %}">View All Celebrities</a></li>
-          <li><a class="text-decoration-none" href="{% url 'whey_create' %}">Add Whey Protein</a></li>
-          <li><a class="text-decoration-none" href="{% url 'whey_index' %}">View All Whey Protein</a></li>
+            <li><a class="text-decoration-none" href="{% url 'about' %}">About</a></li>
+          {% if user.is_authenticated %}
+            <li><a class="text-decoration-none" href="{% url 'celeb_create' %}">Add Celebrity</a></li>
+            <li><a class="text-decoration-none" href="{% url 'celeb_index' %}">View All Celebrities</a></li>
+            <li><a class="text-decoration-none" href="{% url 'whey_create' %}">Add Whey Protein</a></li>
+            <li><a class="text-decoration-none" href="{% url 'whey_index' %}">View All Whey Protein</a></li>
+            <li><a class="text-decoration-none" href="{% url 'logout' %}">Log Out</a></li>
+          {% else %}
+            <li><a class="text-decoration-none" href="{% url 'signup' %}">Sign Up</a></li>
+            <li><a class="text-decoration-none" href="{% url 'login' %}">Log In</a></li>
+          {% endif %}
         </ul>
       </div>
     </nav>

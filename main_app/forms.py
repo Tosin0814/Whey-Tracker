@@ -5,7 +5,7 @@ from .models import CustomerRating, Celebrity
 class CustomerRatingForm(ModelForm):
   class Meta:
     model = CustomerRating
-    fields = ['user_name','rating', 'value', 'review_text']
+    fields = ['rating', 'value', 'review_text']
 
 # class AddCelebrityForm(ModelForm):
 #   class Meta:
