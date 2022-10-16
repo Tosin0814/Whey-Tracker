@@ -1,9 +1,13 @@
-from nis import cat
 from django.shortcuts import render, redirect
-from .models import Whey, Celebrity
+from .models import Whey, Celebrity, Photo
 from .forms import CustomerRatingForm
 from django.views.generic import ListView, DeleteView, DetailView, UpdateView, CreateView
+import uuid
+import boto3
 
+
+S3_BASE_URL = 'https://s3-ca-central-1.amazonaws.com/'
+BUCKET = 'whey-tracker'
 
 
 # Create your views here.
@@ -97,3 +101,23 @@ def assoc_celeb(request, whey_id):
 def disassoc_celeb(request, whey_id, celebrity_id):
   Whey.objects.get(id=whey_id).celebrities.remove(celebrity_id)
   return redirect('whey_detail', whey_id=whey_id)
+
+
+def add_photo(request, whey_id):
+    # photo-file will be the "name" attribute on the <input type="file">
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        # need a unique "key" for S3 / needs image file extension too
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        # just in case something goes wrong
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            # build the full url string
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            # we can assign to whey_id or whey (if you have a whey object)
+            photo = Photo(url=url, whey_id=whey_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('whey_detail', whey_id=whey_id)
