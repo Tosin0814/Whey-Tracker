@@ -4,7 +4,7 @@
     <div class="container">
         <div class="">
             <div class="row">
-                <div class="card col-md-7">
+                <div class="card col-7">
                     <div class="card-content">
                         <span class="card-title">{{ whey.name }}</span>
                         <p>Protein Content: {{ whey.protein_content }} grams</p>
@@ -18,17 +18,17 @@
                         <a class="text-decoration-none" href="{% url 'whey_delete' whey.id %}">Delete</a>
                     </div>
                 </div>
-                <div class="card col-md-4 ml-auto p-3">
+                <div class="card col-3 p-3">
                     <h5> {{ whey.name }} is used by:</h5>
                     {% if whey.celebrities.count %}
                         <ul>
                             <div class="ml-5 container">
                                 {% for celebrity in whey.celebrities.all %}
                                 <div class="row border-bottom">
-                                    <div class="col-9 align-self-start">
+                                    <div class="col-9">
                                         <li >{{celebrity.name}} the {{celebrity.get_profession_display}}</li>
                                     </div>
-                                    <div class="col align-self-end ">
+                                    <div class="col">
                                         <form action="{% url 'disassoc_celeb' whey.id celebrity.id %}" method="post">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-small btn-danger">X</button>
@@ -49,28 +49,30 @@
                     <h4>Add Celebrity</h4>
                     {% if celebs_whey_doesnt_have.count %}
                         <div class="container">
-                            <form action="{% url 'assoc_celeb' whey.id %}" method="post">
+                            <form action="{% url 'assoc_celeb' whey.id %}" method="post" id="add-celeb-form">
                                 {% csrf_token %}
-                                <select name="celebs_whey_doesnt_have" id="add_celeb">
+                                <select name="celebs_whey_doesnt_have" id="add-celeb-name">
                                     {% for celebrity in celebs_whey_doesnt_have.all %}
                                         <option value="{{celebrity.id}}">{{celebrity.name}}</option>
                                     {% endfor %}
                                 </select>
-                                <button type="submit" class="btn btn-small btn-primary">Add</button>
+                                <button type="submit" class="btn btn-small btn-primary add-celeb-btn">Add</button>
                             </form>
+                            <p class="output-message"></p>
                         </div>
                     {% else %}
                         <h6>No more celebrities to add</h6>
                     {% endif %}
                 </div>
                 <br>
-                <div class="col-7 card add-review-form pt-3">
+                <div class="col-7 card pt-3">
                     <h4>Review Whey</h4>
-                    <form class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
+                    <form id="add-review-form" class="row g-1" action="{% url 'add_customer_review' whey.id %}" method="post">
                         {% csrf_token %}
                         {{ customer_rating_form.as_p }}
-                        <input type="submit" class="btn btn-primary" value="Add Review">
+                        <input type="submit" class="btn btn-primary add-review-btn" value="Add Review">
                     </form>
+                    <p class="review-output-message"></p>
                 </div>
             </div>
         </div>
@@ -93,12 +95,99 @@
             <br>
         {% endfor %}
     </div>
-
     <script>
-        // add additional JS to initialize select below
+        
+    </script>
+        
+    <script>
+        // add additional JS to initialize select input
         var selectEl = document.querySelector('#id_value');
         M.FormSelect.init(selectEl);
-        var selectEl = document.querySelector('#add_celeb');
+        var selectEl = document.querySelector('#add-celeb-name');
         M.FormSelect.init(selectEl);
+
+        //Prevent reload when a celebrity is added to whey
+        let outputMessage = document.querySelector('.output-message')
+        document.getElementById("add-celeb-form").addEventListener("submit", function(e){
+            e.preventDefault();
+            celeb_id = document.getElementById("add-celeb-name").value;
+            // console.log(celeb_id)
+            const formData = new FormData();
+            formData.append('celebs_whey_doesnt_have', celeb_id);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            console.log(formData);
+            fetch('{% url "assoc_celeb" whey.id %}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(data => {
+                // alert('good')
+                document.querySelector('.add-celeb-btn').classList.remove('btn-primary')
+                document.querySelector('.add-celeb-btn').classList.add('btn-success')
+                outputMessage.innerHTML = "Your Celebrity has been added! Add another celebrity or Reload page to view updates"
+                setTimeout(function(){ 
+                    outputMessage.style.display = "none";
+                    document.querySelector('.add-celeb-btn').classList.remove('btn-success')
+                    document.querySelector('.add-celeb-btn').classList.add('btn-primary')
+                }, 4000);
+                setTimeout(function(){ 
+                    outputMessage.style.display = "";
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Prevent reload when review is added
+        let reviewOutputMessage = document.querySelector('.review-output-message')
+        document.getElementById("add-review-form").addEventListener("submit", function(e){
+            e.preventDefault();
+            username = document.getElementById("id_user_name").value;
+            rating = document.getElementById("id_rating").value;
+            value = document.getElementById("id_value").value;
+            reviewText = document.getElementById("id_review_text").value;
+            const formData = new FormData();
+        
+            formData.append('user_name', username);
+            formData.append('rating', rating);
+            formData.append('value', value);
+            formData.append('review_text', reviewText);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            console.log(formData);
+            fetch('{% url "add_customer_review" whey.id %}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(data => {
+                console.log('Success:', data);
+                document.getElementById("id_user_name").value = "";
+                document.getElementById("id_rating").value = "";
+                document.getElementById("id_value").value = "";
+                document.getElementById("id_review_text").value = "";
+                document.querySelector('.add-review-btn').classList.remove('btn-primary')
+                document.querySelector('.add-review-btn').classList.add('btn-success')
+                reviewOutputMessage.innerHTML = "Your review has been posted! Refresh page to view updates."
+                setTimeout(function(){ 
+                    reviewOutputMessage.style.display = "none";
+                    document.querySelector('.add-review-btn').classList.remove('btn-success')
+                    document.querySelector('.add-review-btn').classList.add('btn-primary')
+                }, 4000);
+                setTimeout(function(){ 
+                    reviewOutputMessage.style.display = "";
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("output-message").innerText = "Sorry! There was an error submitting your enquiry. "
+                setTimeout(function(){ 
+                document.getElementById("output-message").style.display = "none";
+                }, 3000);
+                setTimeout(function(){ 
+                document.getElementById("output-message").style.display = "";
+                }, 1000);
+            
+            });
+        });
     </script>
 {% endblock %}
