@@ -144,9 +144,9 @@ def add_photo(request, whey_id):
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
         # First delete previous photo (Only one photo is allowed)
-        existing_photo = Photo.objects.filter(whey_id=whey_id)
-        if existing_photo:
-            Photo.objects.get(whey_id=whey_id).delete()
+        existing_photos = Photo.objects.filter(whey_id=whey_id)
+        if existing_photos:
+            existing_photos.delete()
         s3 = boto3.client('s3')
         # need a unique "key" for S3 / needs image file extension too
         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
