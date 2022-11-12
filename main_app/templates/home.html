@@ -2,6 +2,9 @@
 {% block content %}
 
 <h1>Home</h1>
+{% if user.is_authenticated %}
+<h3>Welcome to Whey Tracker</h3>
+{% else %}
 <h3>Please Sign In or Create an Account</h3>
-
+{% endif %}
 {% endblock %}
